@@ -7,12 +7,12 @@ data:
   superset_config.py: |
     from superset.config import *
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////var/lib/superset/superset.db'
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
-
-    SECRET_KEY = 'your_secret_key'
-
-    SUPERSET_WEBSERVER_PORT = 8088
-
-    # Example of SQLALCHEMY_DATABASE_URI for ClickHouse
+    
     SQLALCHEMY_DATABASE_URI = 'clickhouse://default:@clickhouse:9000/default'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    
+    SECRET_KEY = os.getenv('SUPERSET_SECRET_KEY', 'your_default_secret_key')
+
+   
+    SUPERSET_WEBSERVER_PORT = 8088
