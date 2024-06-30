@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: superset-config
+  namespace: analytics
+data:
+  superset_config.py: |
+    from superset.config import *
+
+    SQLALCHEMY_DATABASE_URI = 'sqlite:////var/lib/superset/superset.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+    SECRET_KEY = 'your_secret_key'
+
+    SUPERSET_WEBSERVER_PORT = 8088
+
+    # Example of SQLALCHEMY_DATABASE_URI for ClickHouse
+    SQLALCHEMY_DATABASE_URI = 'clickhouse://default:@clickhouse:9000/default'

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: superset
+  namespace: analytics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: superset
+  template:
+    metadata:
+      labels:
+        app: superset
+    spec:
+      containers:
+        - name: superset
+          image: apache/superset:latest
+          ports:
+            - containerPort: 8088
+          env:
+            - name: SUPERSET_WEBSERVER_PORT
+              value: "8088"
+            - name: SUPERSET_CONFIG_PATH
+              value: "/app/pythonpath/superset_config.py"
+          volumeMounts:
+            - name: superset-config
+              mountPath: /app/pythonpath/superset_config.py
+              subPath: superset_config.py
+      volumes:
+        - name: superset-config
+          configMap:
+            name: superset-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: superset
+  namespace: analytics
+spec:
+  ports:
+    - port: 8088
+      targetPort: 8088
+  selector:
+    app: superset

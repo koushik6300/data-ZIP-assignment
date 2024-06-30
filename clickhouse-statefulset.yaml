@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: clickhouse
+  namespace: analytics
+spec:
+  selector:
+    matchLabels:
+      app: clickhouse
+  serviceName: "clickhouse"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: clickhouse
+    spec:
+      containers:
+        - name: clickhouse
+          image: yandex/clickhouse-server:latest
+          ports:
+            - containerPort: 9000
+              name: native
+          volumeMounts:
+            - name: clickhouse-storage
+              mountPath: /var/lib/clickhouse
+  volumeClaimTemplates:
+  - metadata:
+      name: clickhouse-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse
+  namespace: analytics
+spec:
+  ports:
+    - port: 9000
+      targetPort: 9000
+      name: native
+  selector:
+    app: clickhouse
